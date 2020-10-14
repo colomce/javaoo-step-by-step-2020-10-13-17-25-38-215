@@ -3,6 +3,9 @@ package practice11;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
+import static practice11.KlassEvents.NEW_APPENDED_STUDENT;
+import static practice11.KlassEvents.NEW_LEADER;
+
 public class Teacher extends Person implements Observer {
     private LinkedList<Klass> klasses;
     public Teacher(int id, String name, int age, LinkedList<Klass> klasses) {
@@ -52,10 +55,20 @@ public class Teacher extends Person implements Observer {
     }
 
     @Override
-    public void update(Student student, Klass klass, String type) {
-        String message = type.equals("append") ?
-                "I am " + this.getName() + ". I know " + student.getName() +" has joined "+ klass.getDisplayName()+ ".\n" :
-                "I am "+ this.getName() +". I know " + student.getName() +" become Leader of "+ klass.getDisplayName() + ".\n";
-        System.out.print(message);
+    public void update(Object data, Event event) {
+        if(data instanceof KlassEventDataWrapper) {
+            KlassEventDataWrapper klassEventDataWrapper = (KlassEventDataWrapper)data;
+            Student student = klassEventDataWrapper.getStudent();
+            Klass klass = klassEventDataWrapper.getKlass();
+            switch ((KlassEvents)event) {
+                case NEW_APPENDED_STUDENT:
+                    System.out.print("I am " + this.getName() + ". I know " + student.getName() +" has joined "+ klass.getDisplayName()+ ".\n");
+                    break;
+
+                case NEW_LEADER:
+                    System.out.print("I am "+ this.getName() +". I know " + student.getName() +" become Leader of "+ klass.getDisplayName() + ".\n");
+                    break;
+            }
+        }
     }
 }
