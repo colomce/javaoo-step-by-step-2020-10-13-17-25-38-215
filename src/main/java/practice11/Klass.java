@@ -3,6 +3,9 @@ package practice11;
 import java.util.ArrayList;
 import java.util.List;
 
+import static practice11.KlassEvents.NEW_APPENDED_STUDENT;
+import static practice11.KlassEvents.NEW_LEADER;
+
 public class Klass implements Observable {
     private int number;
     private Student leader;
@@ -38,13 +41,13 @@ public class Klass implements Observable {
             System.out.print("It is not one of us.\n");
         } else {
             this.leader = student;
-            notifyObservers(student, "leader");
+            notifyObservers(new KlassEventDataWrapper(student, this), NEW_LEADER);
         }
     }
 
     public void appendMember(Student student) {
         student.setKlass(this);
-        notifyObservers(student, "append");
+        notifyObservers(new KlassEventDataWrapper(student, this), NEW_APPENDED_STUDENT);
     }
 
     @Override
@@ -55,8 +58,10 @@ public class Klass implements Observable {
     }
 
     @Override
-    public void notifyObservers(Student student, String action) {
-        this.observerList.stream().forEach(observer ->  {observer.update(student, this, action);});
+    public void notifyObservers(EventData eventData, Event event) {
+        this.observerList.forEach(observer -> {
+            observer.update(eventData, event);
+        });
     }
 
     @Override
