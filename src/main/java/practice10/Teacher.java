@@ -33,9 +33,7 @@ public class Teacher extends Person {
 
     public boolean isTeaching(Student student) {
         return this.klasses != null && this.klasses.size() != 0 &&
-                this.klasses.stream()
-                        .map(Klass::getNumber)
-                        .anyMatch(klass -> klass.equals(student.getKlass().getNumber()));
+                this.klasses.stream().anyMatch(klass -> klass.isIn(student));
     }
 
     public String introduceWith(Student student) {
